@@ -1,10 +1,9 @@
-```
 <!doctype html>
 <html lang="sv">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JobbPilot V0.2</title>
+<title>JobbPilot V0.4</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#101214;--panel:#191c20;--panel2:#22262c;--line:#32363d;--text:#fff;--muted:#a9afb7;--orange:#ff7900;--red:#e53935;--green:#35c46a;--yellow:#f0b429}
@@ -12,134 +11,68 @@
 .app{max-width:560px;margin:auto;min-height:100vh;background:#141619}.top{padding:20px 18px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#141619;z-index:5}
 .logo{font-weight:900;font-size:24px;letter-spacing:.5px}.logo span{color:var(--orange)}.sub{color:var(--muted);font-size:12px;margin-top:3px}
 main{padding:16px 15px 94px}.view{display:none}.view.active{display:block}h1{font-size:27px;margin:6px 0 3px}.muted{color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px;margin-top:11px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.metric b{font-size:24px;display:block;margin-top:5px}.metric small{color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px;margin-top:11px}.click{cursor:pointer}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.metric b{font-size:24px;display:block;margin-top:5px}.metric small{color:var(--muted)}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}.pill{display:inline-block;border-radius:99px;padding:4px 8px;font-size:11px;font-weight:800}.green{background:#143d26;color:#6be596}.yellow{background:#4b390d;color:#ffd45b}.red{background:#4a191a;color:#ff7773}
-.item{padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.btn{border:0;border-radius:11px;background:var(--orange);color:#111;font-weight:850;padding:11px 14px;cursor:pointer}.btn.secondary{background:var(--panel2);color:#fff}.btn.full{width:100%;margin-top:10px}
+.item{padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.btn{border:0;border-radius:11px;background:var(--orange);color:#111;font-weight:850;padding:11px 14px;cursor:pointer}.btn.secondary{background:var(--panel2);color:#fff}.btn.danger{background:#4a191a;color:#ff9b98}.btn.full{width:100%;margin-top:10px}
 .input,.select,.textarea{width:100%;background:#101214;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px;margin-top:7px}.textarea{min-height:92px;resize:vertical}.label{font-size:12px;color:var(--muted);margin-top:10px}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#1a1d20;border-top:1px solid var(--line);z-index:10}.nav button{border:0;background:none;color:#9da3aa;padding:9px 2px 8px;font-size:11px}.nav button.active{color:var(--orange)}.ico{display:block;font-size:20px}
-.toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#252a30;border:1px solid var(--line);padding:11px 14px;border-radius:11px;display:none;z-index:20;max-width:90%}.hidden{display:none!important}.login{padding-top:24px}
+.toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#252a30;border:1px solid var(--line);padding:11px 14px;border-radius:11px;display:none;z-index:20;max-width:90%}.hidden{display:none!important}.login{padding-top:24px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 </style>
 </head>
-<body>
-<div class="app">
+<body><div class="app">
 <header class="top"><div class="logo">JOBB<span>PILOT</span></div><div class="sub">Enkelt ute i fält. Full kontroll på kontoret.</div></header>
 <main>
-<section id="setup" class="view active">
-<h1>V0.2 – Koppla Supabase</h1>
-<div class="card">
-<div class="muted">Klistra in dina två publika Supabase-uppgifter här. De sparas bara i webbläsaren på den här enheten.</div>
-<div class="label">Project URL</div>
-<input id="supabaseUrl" class="input" placeholder="https://xxxx.supabase.co">
-<div class="label">Publishable key</div>
-<input id="supabaseKey" class="input" placeholder="sb_publishable_...">
-<button class="btn full" onclick="saveConfig()">Spara och fortsätt</button>
-</div>
-<div class="card"><b>Viktigt</b><p class="muted">Använd bara Publishable key. Lägg aldrig in Secret key eller service_role här.</p></div>
-</section>
+<section id="setup" class="view active"><h1>V0.4 – Koppla Supabase</h1><div class="card"><div class="muted">Uppgifterna sparas bara i webbläsaren på den här enheten.</div><div class="label">Project URL</div><input id="supabaseUrl" class="input" placeholder="https://xxxx.supabase.co"><div class="label">Publishable key</div><input id="supabaseKey" class="input" placeholder="sb_publishable_..."><button class="btn full" onclick="saveConfig()">Spara och fortsätt</button></div><div class="card"><b>Viktigt</b><p class="muted">Använd bara Publishable key. Lägg aldrig in Secret key eller service_role här.</p></div></section>
 
-<section id="login" class="view">
-<h1>Logga in</h1>
-<div class="card login">
-<div class="label">E-post</div><input id="email" class="input" type="email" placeholder="din@email.se">
-<div class="label">Lösenord</div><input id="password" class="input" type="password" placeholder="••••••••">
-<button class="btn full" onclick="login()">Logga in</button>
-</div>
-</section>
+<section id="login" class="view"><h1>Logga in</h1><div class="card login"><div class="label">E-post</div><input id="email" class="input" type="email"><div class="label">Lösenord</div><input id="password" class="input" type="password"><button class="btn full" onclick="login()">Logga in</button></div></section>
 
-<section id="home" class="view">
-<div class="row"><div><h1>Operationscentralen</h1><div class="muted" id="ownerName">Ägare</div></div><button class="btn secondary" onclick="logout()">Logga ut</button></div>
-<div class="card"><div class="row"><b>Företagets puls</b><span class="pill green">● Aktiv</span></div><p class="muted">Kopplad mot Supabase.</p></div>
-<div class="grid">
-<div class="card metric">📋<b id="projectCount">0</b><small>Projekt</small></div>
-<div class="card metric">👥<b id="customerCount">0</b><small>Kunder</small></div>
-<div class="card metric">🚜<b id="machineCount">0</b><small>Maskiner</small></div>
-<div class="card metric">⏱️<b id="timeCount">0</b><small>Tidrapporter</small></div>
-</div>
-<div class="card"><b>⚡ Snabbval</b>
-<div class="item"><button class="btn" onclick="navTo('projects')">+ Nytt projekt</button></div>
-<div class="item"><button class="btn secondary" onclick="navTo('customers')">+ Ny kund</button></div>
-</div>
-</section>
+<section id="home" class="view"><div class="row"><div><h1>Operationscentralen</h1><div class="muted" id="ownerName">JobbPilot</div></div><button class="btn secondary" onclick="logout()">Logga ut</button></div><div class="card"><div class="row"><b>Företagets puls</b><span class="pill green">● Aktiv</span></div><p class="muted">Kopplad mot Supabase.</p></div><div class="grid"><div class="card metric">📋<b id="projectCount">0</b><small>Projekt</small></div><div class="card metric">👥<b id="customerCount">0</b><small>Kunder</small></div><div class="card metric">🚜<b id="machineCount">0</b><small>Maskiner</small></div><div class="card metric">⏱️<b id="timeCount">0</b><small>Tidrapporter</small></div></div><div class="card"><b>⚡ Snabbval</b><div class="item"><button class="btn" onclick="navTo('projects');toggleProjectForm(true)">+ Nytt projekt</button></div><div class="item"><button class="btn secondary" onclick="navTo('customers');toggleCustomerForm(true)">+ Ny kund</button></div></div></section>
 
-<section id="projects" class="view">
-<div class="row"><div><h1>Projekt</h1><div class="muted">Riktiga poster från Supabase</div></div><button class="btn" onclick="toggleProjectForm()">+ Nytt</button></div>
-<div id="projectForm" class="card hidden">
-<b>Skapa projekt</b>
-<div class="label">Projektnamn</div><input id="pName" class="input" placeholder="Ex. Centrum">
-<div class="label">Kund</div><select id="pCustomer" class="select"><option value="">Ingen kund vald</option></select>
-<div class="label">Adress</div><input id="pAddress" class="input" placeholder="Arbetsplats">
-<div class="label">Startdatum</div><input id="pStart" class="input" type="date">
-<div class="label">Slutdatum</div><input id="pEnd" class="input" type="date">
-<div class="label">Beskrivning</div><textarea id="pDesc" class="textarea" placeholder="Vad ska göras?"></textarea>
-<button class="btn full" onclick="createProject()">Skapa projekt</button>
-</div>
-<div id="projectList"></div>
-</section>
+<section id="projects" class="view"><div class="row"><div><h1>Projekt</h1><div class="muted">Dina och delade projekt</div></div><button class="btn" onclick="toggleProjectForm()">+ Nytt</button></div><div id="projectForm" class="card hidden"><b id="projectFormTitle">Skapa projekt</b><input id="pId" type="hidden"><div class="label">Projektnamn</div><input id="pName" class="input"><div class="label">Kund</div><select id="pCustomer" class="select"><option value="">Ingen kund vald</option></select><div class="label">Adress</div><input id="pAddress" class="input"><div class="label">Startdatum</div><input id="pStart" class="input" type="date"><div class="label">Slutdatum</div><input id="pEnd" class="input" type="date"><div class="label">Status</div><select id="pStatus" class="select"><option value="planning">Planerat</option><option value="active">Pågår</option><option value="paused">Pausat</option><option value="completed">Klart</option><option value="cancelled">Avbrutet</option></select><div class="label">Beskrivning</div><textarea id="pDesc" class="textarea"></textarea><button class="btn full" onclick="saveProject()">Spara projekt</button></div><div id="projectList"></div></section>
 
-<section id="customers" class="view">
-<div class="row"><div><h1>Kunder</h1><div class="muted">Kundkort och favoritkunder</div></div><button class="btn" onclick="toggleCustomerForm()">+ Ny</button></div>
-<div id="customerForm" class="card hidden">
-<b>Skapa kund</b>
-<div class="label">Namn</div><input id="cName" class="input" placeholder="Företag eller privatkund">
-<div class="label">Kontaktperson</div><input id="cContact" class="input">
-<div class="label">Telefon</div><input id="cPhone" class="input">
-<div class="label">E-post</div><input id="cEmail" class="input" type="email">
-<div class="label">Adress</div><input id="cAddress" class="input">
-<div class="label">Anteckningar</div><textarea id="cNotes" class="textarea"></textarea>
-<label class="item" style="display:block;border:0"><input id="cFavorite" type="checkbox"> Favoritkund</label>
-<button class="btn full" onclick="createCustomer()">Skapa kund</button>
-</div>
-<div id="customerList"></div>
-</section>
+<section id="projectDetail" class="view"><button class="btn secondary" onclick="navTo('projects')">← Projekt</button><div id="projectDetailBox"></div></section>
 
-<section id="calendar" class="view">
-<h1>Kalender</h1>
-<div class="card"><b>V0.2</b><p class="muted">Kalendern kopplas på efter att projekt/kunder fungerar. Nästa steg blir personal, projektbyten och maskinplanering.</p></div>
-</section>
+<section id="customers" class="view"><div class="row"><div><h1>Kunder</h1><div class="muted">Kundkort och favoritkunder</div></div><button class="btn" onclick="toggleCustomerForm()">+ Ny</button></div><div id="customerForm" class="card hidden"><b>Skapa kund</b><div class="label">Namn</div><input id="cName" class="input"><div class="label">Kontaktperson</div><input id="cContact" class="input"><div class="label">Telefon</div><input id="cPhone" class="input"><div class="label">E-post</div><input id="cEmail" class="input" type="email"><div class="label">Adress</div><input id="cAddress" class="input"><div class="label">Anteckningar</div><textarea id="cNotes" class="textarea"></textarea><label class="item" style="display:block;border:0"><input id="cFavorite" type="checkbox"> Favoritkund</label><button class="btn full" onclick="createCustomer()">Skapa kund</button></div><div id="customerList"></div></section>
 
-<section id="more" class="view">
-<h1>Mer</h1>
-<div class="card"><b>🚜 Maskiner</b><p class="muted">Tabellen finns i Supabase och kopplas på i nästa byggsteg.</p></div>
-<div class="card"><b>📦 Material</b><p class="muted">Beställningar och leveranser kommer härnäst.</p></div>
-<div class="card"><b>📖 Projektdagbok</b><p class="muted">Dagbok + bilder + AI-text kopplas på efter kärnflödet.</p></div>
-<div class="card"><b>⚙️ Anslutning</b><button class="btn secondary full" onclick="resetConfig()">Byt Supabase-inställningar</button></div>
-</section>
+<section id="calendar" class="view"><div class="row"><div><h1>Kalender</h1><div class="muted">Planering och händelser</div></div><button class="btn" onclick="toggleEventForm()">+ Ny</button></div><div id="eventForm" class="card hidden"><b>Ny kalenderhändelse</b><div class="label">Rubrik</div><input id="eTitle" class="input"><div class="label">Datum</div><input id="eDate" class="input" type="date"><div class="label">Starttid</div><input id="eStart" class="input" type="time"><div class="label">Sluttid</div><input id="eEnd" class="input" type="time"><div class="label">Anteckning</div><textarea id="eNote" class="textarea"></textarea><button class="btn full" onclick="createEvent()">Spara i kalender</button></div><div id="calendarList"></div></section>
+
+<section id="more" class="view"><h1>Mer</h1><div class="card"><b>🚜 Maskiner</b><p class="muted">Maskiner hämtas från Supabase.</p><div id="machineList"></div></div><div class="card"><b>⏱️ Tidrapportering</b><p class="muted">Tidrapporter räknas på startsidan och är skyddade av företagets/projektets behörigheter.</p></div><div class="card"><b>🔐 Projektbehörighet</b><p class="muted">Arbetsledare ser bara projekt som de äger eller som har delats med dem. Det styrs av RLS-reglerna i Supabase, inte av webbläsaren.</p></div><div class="card"><b>⚙️ Anslutning</b><button class="btn secondary full" onclick="resetConfig()">Byt Supabase-inställningar</button></div></section>
 </main>
 
-<nav id="nav" class="nav hidden">
-<button class="active" onclick="navClick(this,'home')"><span class="ico">🏠</span>Drift</button>
-<button onclick="navClick(this,'projects')"><span class="ico">📋</span>Projekt</button>
-<button onclick="navClick(this,'calendar')"><span class="ico">📅</span>Kalender</button>
-<button onclick="navClick(this,'customers')"><span class="ico">👥</span>Kunder</button>
-<button onclick="navClick(this,'more')"><span class="ico">⋯</span>Mer</button>
-</nav>
-<div id="toast" class="toast"></div>
-</div>
+<nav id="nav" class="nav hidden"><button class="active" onclick="navClick(this,'home')"><span class="ico">🏠</span>Drift</button><button onclick="navClick(this,'projects')"><span class="ico">📋</span>Projekt</button><button onclick="navClick(this,'calendar')"><span class="ico">📅</span>Kalender</button><button onclick="navClick(this,'customers')"><span class="ico">👥</span>Kunder</button><button onclick="navClick(this,'more')"><span class="ico">⋯</span>Mer</button></nav><div id="toast" class="toast"></div></div>
+
 <script>
-let sb=null;
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
-function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
-function navClick(btn,id){document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');show(id);if(id==='projects')loadProjects();if(id==='customers')loadCustomers();if(id==='home')loadDashboard()}
-function navTo(id){show(id);if(id==='projects')loadProjects();if(id==='customers')loadCustomers()}
-function toggleProjectForm(){document.getElementById('projectForm').classList.toggle('hidden')}
-function toggleCustomerForm(){document.getElementById('customerForm').classList.toggle('hidden')}
-function saveConfig(){const url=document.getElementById('supabaseUrl').value.trim().replace(/\/rest\/v1\/?$/,'');const key=document.getElementById('supabaseKey').value.trim();if(!url||!key){toast('Fyll i Project URL och Publishable key');return}localStorage.setItem('jp_url',url);localStorage.setItem('jp_key',key);initSupabase();show('login')}
+let sb=null,currentUser=null,projectCache=[];
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000)}
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0)}
+function navClick(btn,id){document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');navTo(id)}
+function navTo(id){show(id);if(id==='projects')loadProjects();if(id==='customers')loadCustomers();if(id==='calendar')loadCalendar();if(id==='home')loadDashboard();if(id==='more')loadMachines()}
+function toggleProjectForm(force){$('projectForm').classList.toggle('hidden',force===true?false:undefined);if(force===true)$('projectForm').classList.remove('hidden')}
+function toggleCustomerForm(force){if(force===true)$('customerForm').classList.remove('hidden');else $('customerForm').classList.toggle('hidden')}
+function toggleEventForm(){$('eventForm').classList.toggle('hidden')}
+function saveConfig(){const url=$('supabaseUrl').value.trim().replace(/\/rest\/v1\/?$/,'');const key=$('supabaseKey').value.trim();if(!url||!key)return toast('Fyll i Project URL och Publishable key');localStorage.setItem('jp_url',url);localStorage.setItem('jp_key',key);initSupabase();show('login')}
 function resetConfig(){localStorage.removeItem('jp_url');localStorage.removeItem('jp_key');location.reload()}
 function initSupabase(){const url=localStorage.getItem('jp_url'),key=localStorage.getItem('jp_key');if(!url||!key)return false;sb=supabase.createClient(url,key);return true}
-async function login(){const email=document.getElementById('email').value.trim();const password=document.getElementById('password').value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error){toast('Inloggning misslyckades: '+error.message);return}await enterApp(data.user)}
-async function logout(){await sb.auth.signOut();document.getElementById('nav').classList.add('hidden');show('login')}
-async function enterApp(user){const {data:profile,error}=await sb.from('profiles').select('full_name,role,active').eq('id',user.id).single();if(error||!profile){toast('Profil saknas i JobbPilot');return}if(!profile.active){toast('Kontot är inaktivt');return}document.getElementById('ownerName').textContent=profile.full_name+' · '+profile.role;document.getElementById('nav').classList.remove('hidden');show('home');await loadDashboard();await loadCustomersIntoSelect()}
-async function loadDashboard(){if(!sb)return;const [p,c,m,t]=await Promise.all([sb.from('projects').select('*',{count:'exact',head:true}),sb.from('customers').select('*',{count:'exact',head:true}),sb.from('machines').select('*',{count:'exact',head:true}),sb.from('time_entries').select('*',{count:'exact',head:true})]);document.getElementById('projectCount').textContent=p.count??0;document.getElementById('customerCount').textContent=c.count??0;document.getElementById('machineCount').textContent=m.count??0;document.getElementById('timeCount').textContent=t.count??0}
-async function loadCustomersIntoSelect(){const {data,error}=await sb.from('customers').select('id,name').order('favorite',{ascending:false}).order('name');if(error)return;const sel=document.getElementById('pCustomer');sel.innerHTML='<option value="">Ingen kund vald</option>';data.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;sel.appendChild(o)})}
-async function createCustomer(){const row={name:document.getElementById('cName').value.trim(),contact_name:document.getElementById('cContact').value.trim()||null,phone:document.getElementById('cPhone').value.trim()||null,email:document.getElementById('cEmail').value.trim()||null,address:document.getElementById('cAddress').value.trim()||null,notes:document.getElementById('cNotes').value.trim()||null,favorite:document.getElementById('cFavorite').checked};if(!row.name){toast('Kundnamn krävs');return}const {error}=await sb.from('customers').insert(row);if(error){toast('Kunde inte skapa kund: '+error.message);return}['cName','cContact','cPhone','cEmail','cAddress','cNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('cFavorite').checked=false;toast('Kund skapad');document.getElementById('customerForm').classList.add('hidden');await loadCustomers();await loadCustomersIntoSelect();await loadDashboard()}
-async function loadCustomers(){const {data,error}=await sb.from('customers').select('*').order('favorite',{ascending:false}).order('name');const box=document.getElementById('customerList');if(error){box.innerHTML='<div class="card">Fel: '+error.message+'</div>';return}box.innerHTML='';if(!data.length){box.innerHTML='<div class="card muted">Inga kunder ännu.</div>';return}data.forEach(c=>{const d=document.createElement('div');d.className='card';d.innerHTML='<div class="row"><b>👥 '+esc(c.name)+'</b>'+(c.favorite?'<span class="pill yellow">★ Favorit</span>':'')+'</div>'+(c.contact_name?'<div class="item">Kontakt: '+esc(c.contact_name)+'</div>':'')+(c.phone?'<div class="item">Telefon: '+esc(c.phone)+'</div>':'')+(c.notes?'<div class="item muted">'+esc(c.notes)+'</div>':'');box.appendChild(d)})}
-async function createProject(){const row={name:document.getElementById('pName').value.trim(),customer_id:document.getElementById('pCustomer').value||null,address:document.getElementById('pAddress').value.trim()||null,description:document.getElementById('pDesc').value.trim()||null,status:'planning',start_date:document.getElementById('pStart').value||null,end_date:document.getElementById('pEnd').value||null};if(!row.name){toast('Projektnamn krävs');return}const {error}=await sb.from('projects').insert(row);if(error){toast('Kunde inte skapa projekt: '+error.message);return}['pName','pAddress','pDesc','pStart','pEnd'].forEach(id=>document.getElementById(id).value='');document.getElementById('pCustomer').value='';toast('Projekt skapat');document.getElementById('projectForm').classList.add('hidden');await loadProjects();await loadDashboard()}
-async function loadProjects(){const {data,error}=await sb.from('projects').select('id,name,address,status,start_date,end_date,customers(name)').order('created_at',{ascending:false});const box=document.getElementById('projectList');if(error){box.innerHTML='<div class="card">Fel: '+error.message+'</div>';return}box.innerHTML='';if(!data.length){box.innerHTML='<div class="card muted">Inga projekt ännu.</div>';return}data.forEach(p=>{const d=document.createElement('div');d.className='card';d.innerHTML='<div class="row"><b>📋 '+esc(p.name)+'</b><span class="pill '+statusClass(p.status)+'">'+esc(statusText(p.status))+'</span></div>'+(p.customers?.name?'<div class="item">Kund: '+esc(p.customers.name)+'</div>':'')+(p.address?'<div class="item">📍 '+esc(p.address)+'</div>':'')+((p.start_date||p.end_date)?'<div class="item muted">'+(p.start_date||'')+' → '+(p.end_date||'')+'</div>':'');box.appendChild(d)})}
-function statusText(s){return({planning:'Planerat',active:'Pågår',paused:'Pausat',completed:'Klart',cancelled:'Avbrutet'})[s]||s}
-function statusClass(s){return s==='completed'?'green':s==='paused'||s==='planning'?'yellow':s==='cancelled'?'red':'green'}
+async function login(){const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)return toast('Inloggning misslyckades: '+error.message);await enterApp(data.user)}
+async function logout(){await sb.auth.signOut();currentUser=null;$('nav').classList.add('hidden');show('login')}
+async function enterApp(user){currentUser=user;const {data:profile,error}=await sb.from('profiles').select('full_name,role,active').eq('id',user.id).single();if(error||!profile)return toast('Profil saknas i JobbPilot');if(!profile.active)return toast('Kontot är inaktivt');$('ownerName').textContent=(profile.full_name||user.email)+' · '+profile.role;$('nav').classList.remove('hidden');show('home');await Promise.all([loadDashboard(),loadCustomersIntoSelect()])}
+async function count(table,id){const r=await sb.from(table).select('*',{count:'exact',head:true});$(id).textContent=r.error?'–':(r.count??0)}
+async function loadDashboard(){if(!sb)return;await Promise.all([count('projects','projectCount'),count('customers','customerCount'),count('machines','machineCount'),count('time_entries','timeCount')])}
+async function loadCustomersIntoSelect(){const {data,error}=await sb.from('customers').select('id,name').order('favorite',{ascending:false}).order('name');if(error)return;const sel=$('pCustomer');sel.innerHTML='<option value="">Ingen kund vald</option>';data.forEach(x=>sel.add(new Option(x.name,x.id)))}
+async function createCustomer(){const row={name:$('cName').value.trim(),contact_name:$('cContact').value.trim()||null,phone:$('cPhone').value.trim()||null,email:$('cEmail').value.trim()||null,address:$('cAddress').value.trim()||null,notes:$('cNotes').value.trim()||null,favorite:$('cFavorite').checked};if(!row.name)return toast('Kundnamn krävs');const {error}=await sb.from('customers').insert(row);if(error)return toast('Kunde inte skapa kund: '+error.message);['cName','cContact','cPhone','cEmail','cAddress','cNotes'].forEach(id=>$(id).value='');$('cFavorite').checked=false;$('customerForm').classList.add('hidden');toast('Kund skapad');await Promise.all([loadCustomers(),loadCustomersIntoSelect(),loadDashboard()])}
+async function loadCustomers(){const {data,error}=await sb.from('customers').select('*').order('favorite',{ascending:false}).order('name');const box=$('customerList');if(error){box.innerHTML='<div class="card">Fel: '+esc(error.message)+'</div>';return}box.innerHTML=data.length?'':'<div class="card muted">Inga kunder ännu.</div>';data.forEach(c=>{const d=document.createElement('div');d.className='card';d.innerHTML='<div class="row"><b>👥 '+esc(c.name)+'</b>'+(c.favorite?'<span class="pill yellow">★ Favorit</span>':'')+'</div>'+(c.contact_name?'<div class="item">Kontakt: '+esc(c.contact_name)+'</div>':'')+(c.phone?'<div class="item">Telefon: '+esc(c.phone)+'</div>':'')+(c.email?'<div class="item">'+esc(c.email)+'</div>':'')+(c.notes?'<div class="item muted">'+esc(c.notes)+'</div>':'');box.appendChild(d)})}
+function clearProjectForm(){['pId','pName','pAddress','pDesc','pStart','pEnd'].forEach(id=>$(id).value='');$('pCustomer').value='';$('pStatus').value='planning';$('projectFormTitle').textContent='Skapa projekt'}
+async function saveProject(){const row={name:$('pName').value.trim(),customer_id:$('pCustomer').value||null,address:$('pAddress').value.trim()||null,description:$('pDesc').value.trim()||null,status:$('pStatus').value,start_date:$('pStart').value||null,end_date:$('pEnd').value||null};if(!row.name)return toast('Projektnamn krävs');const id=$('pId').value;const q=id?sb.from('projects').update(row).eq('id',id):sb.from('projects').insert(row);const {error}=await q;if(error)return toast('Kunde inte spara projekt: '+error.message);clearProjectForm();$('projectForm').classList.add('hidden');toast(id?'Projekt uppdaterat':'Projekt skapat');await Promise.all([loadProjects(),loadDashboard()])}
+async function loadProjects(){const {data,error}=await sb.from('projects').select('id,name,address,description,status,start_date,end_date,customer_id,customers(name)').order('created_at',{ascending:false});const box=$('projectList');if(error){box.innerHTML='<div class="card">Fel: '+esc(error.message)+'</div>';return}projectCache=data||[];box.innerHTML=data.length?'':'<div class="card muted">Inga projekt ännu.</div>';data.forEach(p=>{const d=document.createElement('div');d.className='card click';d.onclick=()=>openProject(p.id);d.innerHTML='<div class="row"><b>📋 '+esc(p.name)+'</b><span class="pill '+statusClass(p.status)+'">'+esc(statusText(p.status))+'</span></div>'+(p.customers?.name?'<div class="item">Kund: '+esc(p.customers.name)+'</div>':'')+(p.address?'<div class="item">📍 '+esc(p.address)+'</div>':'')+((p.start_date||p.end_date)?'<div class="item muted">'+esc(p.start_date||'')+' → '+esc(p.end_date||'')+'</div>':'')+'<div class="item muted">Tryck för att öppna projektet →</div>';box.appendChild(d)})}
+function openProject(id){const p=projectCache.find(x=>String(x.id)===String(id));if(!p)return;const b=$('projectDetailBox');b.innerHTML='<h1>'+esc(p.name)+'</h1><div class="card">'+(p.customers?.name?'<div class="item"><b>Kund</b><br>'+esc(p.customers.name)+'</div>':'')+(p.address?'<div class="item"><b>Adress</b><br>'+esc(p.address)+'</div>':'')+'<div class="item"><b>Status</b><br>'+esc(statusText(p.status))+'</div>'+((p.start_date||p.end_date)?'<div class="item"><b>Period</b><br>'+esc(p.start_date||'')+' → '+esc(p.end_date||'')+'</div>':'')+(p.description?'<div class="item"><b>Beskrivning</b><br>'+esc(p.description)+'</div>':'')+'<div class="actions"><button class="btn" onclick="editProject(\''+p.id+'\')">Redigera</button></div></div>';show('projectDetail')}
+function editProject(id){const p=projectCache.find(x=>String(x.id)===String(id));if(!p)return;$('pId').value=p.id;$('pName').value=p.name||'';$('pCustomer').value=p.customer_id||'';$('pAddress').value=p.address||'';$('pStart').value=p.start_date||'';$('pEnd').value=p.end_date||'';$('pStatus').value=p.status||'planning';$('pDesc').value=p.description||'';$('projectFormTitle').textContent='Redigera projekt';show('projects');$('projectForm').classList.remove('hidden');window.scrollTo(0,0)}
+async function createEvent(){const row={title:$('eTitle').value.trim(),event_date:$('eDate').value,start_time:$('eStart').value||null,end_time:$('eEnd').value||null,note:$('eNote').value.trim()||null,created_by:currentUser?.id||null};if(!row.title||!row.event_date)return toast('Rubrik och datum krävs');const {error}=await sb.from('calendar_events').insert(row);if(error)return toast('Kunde inte spara kalenderpost: '+error.message);['eTitle','eDate','eStart','eEnd','eNote'].forEach(id=>$(id).value='');$('eventForm').classList.add('hidden');toast('Sparat i kalendern');await loadCalendar()}
+async function loadCalendar(){const {data,error}=await sb.from('calendar_events').select('*').order('event_date').order('start_time');const box=$('calendarList');if(error){box.innerHTML='<div class="card">Kalenderfel: '+esc(error.message)+'</div>';return}box.innerHTML=data.length?'':'<div class="card muted">Inga kalenderhändelser ännu.</div>';data.forEach(e=>{const d=document.createElement('div');d.className='card';d.innerHTML='<div class="row"><b>📅 '+esc(e.title)+'</b><span class="pill yellow">'+esc(e.event_date)+'</span></div>'+((e.start_time||e.end_time)?'<div class="item">🕒 '+esc((e.start_time||'').slice(0,5))+(e.end_time?' – '+esc(e.end_time.slice(0,5)):'')+'</div>':'')+(e.note?'<div class="item muted">'+esc(e.note)+'</div>':'');box.appendChild(d)})}
+async function loadMachines(){const {data,error}=await sb.from('machines').select('*').limit(50);const box=$('machineList');if(error){box.innerHTML='<div class="item muted">Kan inte läsa maskiner ännu: '+esc(error.message)+'</div>';return}box.innerHTML=data.length?'':'<div class="item muted">Inga maskiner ännu.</div>';data.forEach(m=>{const d=document.createElement('div');d.className='item';d.textContent='🚜 '+(m.name||m.machine_name||m.registration_number||'Maskin');box.appendChild(d)})}
+function statusText(s){return({planning:'Planerat',active:'Pågår',paused:'Pausat',completed:'Klart',cancelled:'Avbrutet'})[s]||s||'–'}
+function statusClass(s){return s==='completed'||s==='active'?'green':s==='paused'||s==='planning'?'yellow':s==='cancelled'?'red':'yellow'}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 (async function boot(){if(initSupabase()){const {data}=await sb.auth.getSession();if(data.session)await enterApp(data.session.user);else show('login')}else show('setup')})();
 </script>
-</body>
-</html>
-```
+</body></html>
